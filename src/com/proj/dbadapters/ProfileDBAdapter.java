@@ -4,7 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -52,7 +59,7 @@ public class ProfileDBAdapter extends SQLiteOpenHelper {
 
 	}
 
-	private boolean setData(String user, String info) {
+	public boolean setData(String user, String info) {
 
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -200,6 +207,8 @@ public class ProfileDBAdapter extends SQLiteOpenHelper {
 		@Override
 		public Profile parseJson(String json) {
 
+			List<String> allDateKeys = new ArrayList<String>();
+			
 			try {
 				JSONObject profileInfo = new JSONObject(json);
 				JSONObject info = profileInfo.getJSONObject(ProfileMeta.User_Info);
@@ -210,9 +219,11 @@ public class ProfileDBAdapter extends SQLiteOpenHelper {
 				JSONObject stat = null;
 				while (keys.hasNext()) {
 					String key = keys.next();
-					stat = stats.optJSONObject(key);
+					allDateKeys.add(key);
 				}
 
+				String key = getLatestKey(allDateKeys);
+				stat = stats.getJSONObject(key);
 				Profile profile = new Profile();
 
 				Integer level = info.getInt(ProfileMeta.Level);
@@ -254,6 +265,24 @@ public class ProfileDBAdapter extends SQLiteOpenHelper {
 
 		}
 
+	}
+	
+	private static String getLatestKey(List<String> allKeys)
+	{
+	
+		List<Date> allDates = new ArrayList<Date>();
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		for (String key : allKeys) {
+		
+		try {
+			allDates.add(format.parse(key));
+		} catch (ParseException e) {
+			Log.e(TAG, e.getMessage());
+		}
+		}
+		Collections.sort(allDates);
+		String latestKey  = format.format(allDates.get(allDates.size() - 1));
+		return latestKey;
 	}
 
 }

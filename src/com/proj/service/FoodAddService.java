@@ -19,26 +19,31 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.proj.dbadapters.ProfileDBAdapter;
 import com.proj.food.AcknowledgeModel;
 import com.proj.food.Food;
+
+import android.content.Context;
 import android.util.Log;
 
 public class FoodAddService {
 
 	private static String LOG_TAG = "FoodAddService";
 	private final static String Request_MSG = "http://www.slimkicker.com/addFoodEntrie.json";
-
-	public AcknowledgeModel AddFood(String userName, String password,
+	private ProfileSync profileSync;
+	
+	
+	public AcknowledgeModel AddFood(Context context, String userName, String password,
 			Food food, String servingNo, String servingType) {
 		HttpClient httpclient = new DefaultHttpClient();
-
+		profileSync = new ProfileSync(context, userName, password);
 		HttpPost post = new HttpPost(Request_MSG);
 
 		// Prepare a request object
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair("username", userName));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
-		nameValuePairs.add(new BasicNameValuePair("active_date", "20120418"));
+		nameValuePairs.add(new BasicNameValuePair("active_date", "20120527"));
 		nameValuePairs.add(new BasicNameValuePair("id", String.valueOf(food
 				.getId())));
 		nameValuePairs.add(new BasicNameValuePair("meal_type", "1"));
@@ -69,7 +74,7 @@ public class FoodAddService {
 					InputStream instream = entity.getContent();
 					Log.i(LOG_TAG, "got stream from server");
 					String serverResponse = convertStreamToString(instream);
-					AcknowledgeModel model = extractData(serverResponse);
+					AcknowledgeModel model = extractData(userName,serverResponse);
 					Log.i(LOG_TAG, serverResponse);
 					return model;
 				}
@@ -108,9 +113,9 @@ public class FoodAddService {
 		return sb.toString();
 	}
 
-	private AcknowledgeModel extractData(String response) {
+	private AcknowledgeModel extractData(String userName, String response) {
 		AcknowledgeModel model = new AcknowledgeModel();
-
+		
 		try {
 			JSONObject ackInfo = new JSONObject(response);
 			JSONObject info = ackInfo
@@ -135,14 +140,18 @@ public class FoodAddService {
 				stat = stats.optJSONObject(key);
 				int diet_points = stat.getInt(AcknowledgeModel.DIET_POINTS);
 				model.setTotal_point(diet_points);
+				if(profileSync != null)
+				{
+					profileSync.call();
+				}
 			}
 
 			return model;
 
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			Log.e(LOG_TAG, e.getMessage());
 			return null;
-		}
+		} 
 	}
 
 }

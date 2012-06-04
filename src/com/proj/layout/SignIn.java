@@ -28,15 +28,15 @@ public class SignIn extends Activity {
 		setContentView(R.layout.signin);
 		prefs = getSharedPreferences(ProfileMeta.USER_INFO, MODE_PRIVATE);
 		
-		String id = prefs.getString(ProfileMeta.USER_ID, null);
-		String password = prefs.getString(ProfileMeta.PASSWORD, null);
+		String id = prefs.getString(ProfileMeta.USER_ID, "tester");
+		String password = prefs.getString(ProfileMeta.PASSWORD, "scryed");
 		
 		dialog = new DefaultProgressController(this);
 		dialog.show();
 	
 		if(id == null|| id == "" || password == null || password == "")
 		{
-			
+			//TODO break progress controller
 		}
 		else{ 		
 		CheckLogInAndRedirect(id, password);

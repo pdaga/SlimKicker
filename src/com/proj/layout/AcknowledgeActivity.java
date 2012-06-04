@@ -4,12 +4,18 @@ import com.proj.food.AcknowledgeModel;
 import com.proj.service.FoodAddService;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class AcknowledgeActivity extends Activity {
 
+	private static String LOG_TAG = "AcknowledgeActivity";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,4 +47,30 @@ public class AcknowledgeActivity extends Activity {
 		
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.ack_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.Profile:
+	    	Log.i(LOG_TAG, "calling profile");
+	    	Intent i = new Intent("Profile");
+	    	startActivity(i);
+	    	return true;
+	    case R.id.Diet:
+	    	Log.i(LOG_TAG, "calling diet");
+	    	Intent diet = new Intent("DietActivity");
+	    	startActivity(diet);
+	    	return true;
+	    default:
+	    	return true;
+	    }
+	}
+
 }

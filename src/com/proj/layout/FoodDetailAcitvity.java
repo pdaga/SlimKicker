@@ -272,7 +272,7 @@ public class FoodDetailAcitvity extends Activity {
 		else
 		{
 			dialog.show();
-			AcknowledgeModel ack = foodAddService.AddFood("tester", "scryed", foodSelected, serving_number, serving_size);
+			AcknowledgeModel ack = foodAddService.AddFood(getBaseContext(),"tester", "scryed", foodSelected, serving_number, serving_size);
 			if(ack != null)
 			{
 				uiCallback.sendEmptyMessage(0);
@@ -281,6 +281,7 @@ public class FoodDetailAcitvity extends Activity {
 				startActivity(ackActivity);
 			} else
 			{
+				uiCallback.sendEmptyMessage(0);
 				Toast toast = Toast.makeText(this, "Service issue found, try again later", Toast.LENGTH_SHORT);
 				toast.show();	
 			}

@@ -192,11 +192,11 @@ public class ProfileLayout extends Activity {
 		
 		txt = (TextView) findViewById(R.id.this_week_label);
 		txt.setTypeface(font);
-		
-		SetUILayout();
+
 	    prefs = getSharedPreferences(ProfileMeta.USER_INFO, MODE_PRIVATE);
 	    username = prefs.getString(ProfileMeta.USER_ID, null);
 		password = prefs.getString(ProfileMeta.PASSWORD, null);
+		SetUILayout();
 	}
 		
 	@Override
@@ -204,7 +204,7 @@ public class ProfileLayout extends Activity {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.Diet:
-	    	Log.i(LOG_TAG, "callin track");
+	    	Log.i(LOG_TAG, "calling diet");
 	    	Intent diet = new Intent("DietActivity");
 	    	startActivity(diet);
 	    	return true;
